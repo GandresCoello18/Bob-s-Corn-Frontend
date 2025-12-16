@@ -7,7 +7,6 @@
       </header>
 
       <div class="max-w-2xl mx-auto">
-        <!-- Purchase Section -->
         <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
           <h2 class="text-2xl font-semibold text-gray-800 mb-6">Buy Corn</h2>
           <p class="text-gray-600 mb-6">
@@ -28,7 +27,6 @@
           </div>
         </div>
 
-        <!-- Purchase History Section -->
         <div class="bg-white rounded-lg shadow-lg p-8">
           <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-semibold text-gray-800">Purchase History</h2>
@@ -76,87 +74,20 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 
-import { getPurchases, purchaseCorn } from '@/services/api';
+import { usePurchase } from '@/composables/usePurchase';
+import { formatDate, formatStatus, getStatusClass } from '@/utils/purchaseUtils';
 
-interface Purchase {
-  id: string;
-  clientIp: string;
-  createdAt: string;
-  status: string;
-  meta: unknown;
-}
-
-const isLoading = ref(false);
-const isLoadingPurchases = ref(false);
-const message = ref('');
-const messageClass = ref('');
-const purchases = ref<Purchase[]>([]);
-
-const handlePurchase = async () => {
-  isLoading.value = true;
-  message.value = '';
-
-  try {
-    const result = await purchaseCorn();
-    message.value = result.message;
-    messageClass.value = 'bg-green-100 text-green-800';
-
-    // Refresh purchases after successful purchase
-    setTimeout(() => {
-      loadPurchases();
-    }, 500);
-  } catch (error: unknown) {
-    const errorMessage =
-      error &&
-      typeof error === 'object' &&
-      'response' in error &&
-      error.response &&
-      typeof error.response === 'object' &&
-      'data' in error.response
-        ? (error.response.data as { error?: { message?: string } })?.error?.message
-        : null;
-    message.value = errorMessage || 'Failed to purchase corn';
-    messageClass.value = 'bg-red-100 text-red-800';
-  } finally {
-    isLoading.value = false;
-  }
-};
-
-const loadPurchases = async () => {
-  isLoadingPurchases.value = true;
-  try {
-    const result = await getPurchases();
-    purchases.value = result.purchases;
-  } catch (error) {
-    console.error('Failed to load purchases:', error);
-  } finally {
-    isLoadingPurchases.value = false;
-  }
-};
-
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  return date.toLocaleString();
-};
-
-const formatStatus = (status: string) => {
-  return status.replace('_', ' ').toUpperCase();
-};
-
-const getStatusClass = (status: string) => {
-  switch (status) {
-    case 'success':
-      return 'bg-green-100 text-green-800';
-    case 'rate_limited':
-      return 'bg-yellow-100 text-yellow-800';
-    case 'failed':
-      return 'bg-red-100 text-red-800';
-    default:
-      return 'bg-gray-100 text-gray-800';
-  }
-};
+const {
+  isLoading,
+  isLoadingPurchases,
+  message,
+  messageClass,
+  purchases,
+  handlePurchase,
+  loadPurchases,
+} = usePurchase();
 
 onMounted(() => {
   loadPurchases();
