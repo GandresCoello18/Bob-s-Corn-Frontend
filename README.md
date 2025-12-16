@@ -8,6 +8,8 @@ Interfaz web desarrollada con Vue 3 y TypeScript que permite a los usuarios inte
 
 Este proyecto frontend actúa como la capa de presentación del sistema Bob's Corn, proporcionando una interfaz de usuario intuitiva y responsiva que se comunica con la [API REST del backend](https://github.com/GandresCoello18/Bob-s-Corn-API/tree/master). Permite a los usuarios realizar compras, consultar su historial y recibir retroalimentación inmediata sobre sus acciones, incluyendo manejo de errores y limitaciones de tasa de solicitudes.
 
+<img width="1916" height="918" alt="Captura de pantalla 2025-12-15 203602" src="https://github.com/user-attachments/assets/09697b51-f3d3-455a-8a2d-2b8fbb1d4633" />
+
 ## Arquitectura
 
 El frontend sigue una arquitectura modular y escalable:
